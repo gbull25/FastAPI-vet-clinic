@@ -56,7 +56,7 @@ def get_dogs(kind: DogType) -> List[Dog]:
 async def create_item(dog: Dog):
     if dog.pk in dogs_db.keys():
         raise HTTPException(status_code=409, detail="This dog already exists")
-    dog = Dog(name='Marley', pk=7, kind='terrier')
+    dogs_db.update({dog.pk:dog})
     return dog
 
 @app.get('/dog/{pk}')
@@ -71,7 +71,7 @@ def get_dogs_by_pk(pk: int) -> Dog:
 @app.patch('/dog/{pk}')
 def update_dog(pk: int, dog: Dog) -> Dog:
     if dogs_db.get(pk, None):
-        dogs_db[pk] = dog
+        dogs_db.update({dog.pk:dog})
     else:
         raise HTTPException(status_code=409,
                             detail='The specified PK does not exist')
