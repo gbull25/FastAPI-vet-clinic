@@ -36,10 +36,10 @@ dogs_db = {
 
 @app.get('/')
 def root():
-    return "Hello, this is vet-FastAPI"
+    return "Hello, this is your local Vet Clinic FastAPI"
 
 @app.post("/post")
-async def get_post():
+async def get_post() -> Timestamp:
     new_id = 0
     new_timestamp = Timestamp(id=new_id, timestamp=int(datetime.now().timestamp()))
     return new_timestamp
@@ -53,7 +53,7 @@ def get_dogs(kind: DogType) -> List[Dog]:
     return return_for_dogs
 
 @app.post('/dog', response_model=Dog, summary='Create Dog')
-async def create_item(dog: Dog):
+async def create_item(dog: Dog) -> Dog:
     if dog.pk in dogs_db.keys():
         raise HTTPException(status_code=409, detail="This dog already exists")
     dogs_db.update({dog.pk:dog})
