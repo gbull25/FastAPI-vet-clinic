@@ -35,7 +35,7 @@ dogs_db = {
 }
 
 @app.get('/')
-def root():
+async def root():
     return "Hello, this is your local Vet Clinic FastAPI"
 
 @app.post("/post")
@@ -45,7 +45,7 @@ async def get_post() -> Timestamp:
     return new_timestamp
 
 @app.get('/dog')
-def get_dogs(kind: DogType) -> List[Dog]:
+async def get_dogs(kind: DogType) -> List[Dog]:
     return_for_dogs = []
     for _, dog_info in dogs_db.items():
         if dog_info.kind == kind:
@@ -60,7 +60,7 @@ async def create_item(dog: Dog) -> Dog:
     return dog
 
 @app.get('/dog/{pk}')
-def get_dogs_by_pk(pk: int) -> Dog:
+async def get_dogs_by_pk(pk: int) -> Dog:
     for _, dog in dogs_db.items():
         if dog.pk == pk:
             return dog
@@ -69,7 +69,7 @@ def get_dogs_by_pk(pk: int) -> Dog:
                             detail='The specified PK does not exist')
 
 @app.patch('/dog/{pk}')
-def update_dog(pk: int, dog: Dog) -> Dog:
+async def update_dog(pk: int, dog: Dog) -> Dog:
     if dogs_db.get(pk, None):
         dogs_db.update({dog.pk:dog})
     else:
