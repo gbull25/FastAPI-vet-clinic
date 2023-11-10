@@ -34,22 +34,22 @@ dogs_db = {
     6: Dog(name='Uga', pk=6, kind='bulldog')
 }
 
-@app.get('/')
+@app.get('/', summary='Root')
 async def root():
     return "Hello, this is your local Vet Clinic FastAPI"
 
-@app.post("/post")
+@app.post('/post', summary='Get Post')
 async def get_post() -> Timestamp:
     new_id = 0
     new_timestamp = Timestamp(id=new_id, timestamp=int(datetime.now().timestamp()))
     return new_timestamp
 
-@app.get('/dog')
+@app.get('/dog', summary='Get Dogs')
 async def get_dogs(kind: DogType) -> List[Dog]:
-    return_for_dogs = []
-    for _, dog_info in dogs_db.items():
-        if dog_info.kind == kind:
-            return_for_dogs.append(dog_info)
+    if kind:
+        return_for_dogs = [dog for dog in dogs_db.values() if dog.kind.value == kind.lower()]
+    else:
+        return_for_dogs = [dog for dog in dogs_db.values()]
     return return_for_dogs
 
 @app.post('/dog', response_model=Dog, summary='Create Dog')
@@ -59,7 +59,7 @@ async def create_item(dog: Dog) -> Dog:
     dogs_db.update({dog.pk:dog})
     return dog
 
-@app.get('/dog/{pk}')
+@app.get('/dog/{pk}', summary='Get Dog By Pk')
 async def get_dogs_by_pk(pk: int) -> Dog:
     for _, dog in dogs_db.items():
         if dog.pk == pk:
@@ -68,7 +68,7 @@ async def get_dogs_by_pk(pk: int) -> Dog:
         raise HTTPException(status_code=404, 
                             detail='The specified PK does not exist')
 
-@app.patch('/dog/{pk}')
+@app.patch('/dog/{pk}', summary='Update Dog')
 async def update_dog(pk: int, dog: Dog) -> Dog:
     if dogs_db.get(pk, None):
         dogs_db.update({dog.pk:dog})
