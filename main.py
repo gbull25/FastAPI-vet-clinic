@@ -34,14 +34,20 @@ dogs_db = {
     6: Dog(name='Uga', pk=6, kind='bulldog')
 }
 
+post_db = [
+    Timestamp(id=0, timestamp=12),
+    Timestamp(id=1, timestamp=10)
+]
+
 @app.get('/', summary='Root')
 async def root():
     return "Hello, this is your local Vet Clinic FastAPI"
 
 @app.post('/post', summary='Get Post')
 async def get_post() -> Timestamp:
-    new_id = 0
+    new_id = len(post_db) 
     new_timestamp = Timestamp(id=new_id, timestamp=int(datetime.now().timestamp()))
+    post_db.append(new_timestamp)
     return new_timestamp
 
 @app.get('/dog', summary='Get Dogs')
